@@ -13,12 +13,12 @@
     <ImageView
         android:id="@+id/article_image"
         android:layout_width="100dp"
-        android:layout_height="75dp" />
+        android:layout_height="75dp"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginLeft="110dp"
         android:orientation="vertical">
 
         <TextView

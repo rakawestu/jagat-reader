@@ -1,4 +1,4 @@
-package com.github.rakawestu.jagatreader.ui;
+package com.github.rakawestu.jagatreader.ui.activity;
 
 import android.os.Bundle;
 import android.os.Handler;

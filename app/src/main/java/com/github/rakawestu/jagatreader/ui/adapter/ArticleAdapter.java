@@ -52,6 +52,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             Picasso.with(context)
                     .load(article.getImageUrl())
                     .into(articleViewHolder.image);
+        } else {
+            articleViewHolder.image.setVisibility(View.GONE);
         }
     }
 

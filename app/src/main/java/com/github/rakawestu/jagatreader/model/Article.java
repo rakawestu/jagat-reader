@@ -11,6 +11,10 @@ public class Article {
     private String dateTime;
     private String imageUrl;
 
+    public Article() {
+
+    }
+
     public Article(String title, String description, String dateTime, String imageUrl){
         this.title = title;
         this.description = description;

@@ -5,7 +5,7 @@
     android:paddingBottom="@dimen/navigation_padding_bottom"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="@color/blue_700"
+    android:background="@android:color/black"
     android:gravity="bottom">
     <TextView
         android:id="@+id/username"
