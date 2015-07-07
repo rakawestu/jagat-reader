@@ -1,5 +1,7 @@
 package com.github.rakawestu.jagatreader.model;
 
+import com.github.rakawestu.jagatreader.utils.TimeUtil;
+
 import java.io.Serializable;
 
 /**
@@ -45,6 +47,10 @@ public class Article implements Serializable{
 
     public String getDateTime() {
         return dateTime;
+    }
+
+    public String getFormattedDateTime() {
+        return TimeUtil.getFormattedDate(TimeUtil.fromFeed(dateTime));
     }
 
     public void setDateTime(String dateTime) {

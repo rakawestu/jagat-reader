@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.github.rakawestu.jagatreader.BuildConfig;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import timber.log.Timber;
 
 /**
@@ -13,6 +15,8 @@ public class JagatApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //Init Joda
+        JodaTimeAndroid.init(this);
         //Logging
         Timber.plant(BuildConfig.DEBUG ? new Timber.DebugTree() : new Timber.DebugTree() {
             @Override

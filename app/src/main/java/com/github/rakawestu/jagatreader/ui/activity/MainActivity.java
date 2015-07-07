@@ -35,6 +35,8 @@ import com.github.rakawestu.jagatreader.ui.adapter.ArticleAdapter;
 import com.github.rakawestu.jagatreader.utils.RecyclerViewItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -240,6 +242,13 @@ public class MainActivity extends AppCompatActivity{
                             article.setDateTime(item.getPubDate());
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
+                            Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+                            Matcher matcher = pattern.matcher(item.getContent());
+                            if(matcher.find()) {
+                                if (matcher.group(0) != null) {
+                                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                                }
+                            }
                             articles.add(article);
                         }
                         adapter.setArticles(articles);
@@ -266,9 +275,16 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());;
+                            article.setDateTime(item.getPubDate());
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
+                            Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+                            Matcher matcher = pattern.matcher(item.getContent());
+                            if(matcher.find()) {
+                                if (matcher.group(0) != null) {
+                                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                                }
+                            }
                             articles.add(article);
                         }
                         adapter.setArticles(articles);
@@ -298,6 +314,13 @@ public class MainActivity extends AppCompatActivity{
                             article.setDateTime(item.getPubDate());;
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
+                            Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+                            Matcher matcher = pattern.matcher(item.getContent());
+                            if(matcher.find()) {
+                                if (matcher.group(0) != null) {
+                                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                                }
+                            }
                             articles.add(article);
                         }
                         adapter.setArticles(articles);
@@ -333,9 +356,16 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());;
+                            article.setDateTime(item.getPubDate());
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
+                            Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+                            Matcher matcher = pattern.matcher(item.getContent());
+                            if(matcher.find()) {
+                                if (matcher.group(0) != null) {
+                                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                                }
+                            }
                             articles.add(article);
                         }
                         adapter.addArticles(articles);
@@ -360,9 +390,16 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());;
+                            article.setDateTime(item.getPubDate());
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
+                            Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+                            Matcher matcher = pattern.matcher(item.getContent());
+                            if(matcher.find()) {
+                                if (matcher.group(0) != null) {
+                                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                                }
+                            }
                             articles.add(article);
                         }
                         adapter.addArticles(articles);
@@ -387,9 +424,16 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());;
+                            article.setDateTime(item.getPubDate());
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
+                            Pattern pattern = Pattern.compile("src=\"(.+?)\"");
+                            Matcher matcher = pattern.matcher(item.getContent());
+                            if(matcher.find()) {
+                                if (matcher.group(0) != null) {
+                                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                                }
+                            }
                             articles.add(article);
                         }
                         adapter.addArticles(articles);

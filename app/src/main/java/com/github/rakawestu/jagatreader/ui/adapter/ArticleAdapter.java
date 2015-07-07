@@ -51,15 +51,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     public void onBindViewHolder(ArticleViewHolder articleViewHolder, int i) {
         Article article = articles.get(i);
         articleViewHolder.title.setText(article.getTitle());
-        articleViewHolder.date.setText(article.getDateTime());
+        articleViewHolder.date.setText(article.getFormattedDateTime());
         if(article.getImageUrl()!=null) {
+            articleViewHolder.image.setVisibility(View.VISIBLE);
             Picasso.with(context)
                     .load(article.getImageUrl())
                     .into(articleViewHolder.image);
         } else {
             articleViewHolder.image.setVisibility(View.GONE);
         }
-        articleViewHolder.creator.setText(article.getCreator());
+        articleViewHolder.creator.setText("oleh " + article.getCreator());
     }
 
     @Override
