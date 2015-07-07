@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.model.Article;
@@ -38,6 +40,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.detail_activity);
         ButterKnife.inject(this);
 
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
@@ -60,7 +64,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void loadDetails(String data){
-        webView.loadData(data, null, "utf-8");
+        webView.loadData(data, "text/html", "utf-8");
     }
 
     @Override
