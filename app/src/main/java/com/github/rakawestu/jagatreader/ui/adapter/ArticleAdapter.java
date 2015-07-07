@@ -30,6 +30,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         this.context = context;
     }
 
+    public Article getItemData(int position){
+        return articles.get(position);
+    }
+
     public void setArticles(List<Article> articles) {
         this.articles = articles;
     }
@@ -55,6 +59,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         } else {
             articleViewHolder.image.setVisibility(View.GONE);
         }
+        articleViewHolder.creator.setText(article.getCreator());
     }
 
     @Override
@@ -69,6 +74,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         TextView date;
         @InjectView(R.id.article_image)
         ImageView image;
+        @InjectView(R.id.article_creator)
+        TextView creator;
 
         public ArticleViewHolder(View itemView) {
             super(itemView);

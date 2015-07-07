@@ -5,20 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- content-->
-    <WebView
-        android:id="@+id/article_detail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
     <!--toolbar-->
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_height="?actionBarSize"
         android:layout_width="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        android:fitsSystemWindows="true">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_height="?attr/actionBarSize"
@@ -26,4 +18,12 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextAppearance="@style/Toolbar"/>
     </android.support.design.widget.AppBarLayout>
+
+    <!-- content-->
+    <WebView
+        android:id="@+id/article_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?actionBarSize"/>
+
 </android.support.design.widget.CoordinatorLayout>

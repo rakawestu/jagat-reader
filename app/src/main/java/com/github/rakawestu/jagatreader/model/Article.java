@@ -1,25 +1,22 @@
 package com.github.rakawestu.jagatreader.model;
 
+import java.io.Serializable;
+
 /**
  * @author rakawm
  */
-public class Article {
+public class Article implements Serializable{
 
     private int id;
     private String title;
     private String description;
     private String dateTime;
     private String imageUrl;
+    private String content;
+    private String creator;
 
     public Article() {
 
-    }
-
-    public Article(String title, String description, String dateTime, String imageUrl){
-        this.title = title;
-        this.description = description;
-        this.dateTime = dateTime;
-        this.imageUrl = imageUrl;
     }
 
     public int getId() {
@@ -60,5 +57,21 @@ public class Article {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

@@ -36,6 +36,12 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/abc_text_size_subhead_material"
             tools:text="1 Juni 2015"/>
+        <TextView
+            android:id="@+id/article_creator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_subhead_material"
+            tools:text="oleh Raka Westu Mogandhi" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

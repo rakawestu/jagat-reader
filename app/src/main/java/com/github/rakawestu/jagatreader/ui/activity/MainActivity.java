@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcInteractor;
@@ -38,12 +39,15 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import timber.log.Timber;
 
 /**
  * @author rakawm
  */
 public class MainActivity extends AppCompatActivity{
 
+    @InjectView(R.id.bottomProgress)
+    RelativeLayout bottomProgress;
     @InjectView(R.id.progressBar)
     CircularProgressBar progressBar;
     @InjectView(R.id.containerMain)
@@ -60,16 +64,22 @@ public class MainActivity extends AppCompatActivity{
     private Handler handler = new Handler();
     ThreadExecutor threadExecutor;
     MainThreadExecutor mainThreadExecutor;
+    private LinearLayoutManager layoutManager;
     private GetNewsInteractor interactor;
     private GetJagatPlayInteractor playInteractor;
     private GetJagatOcInteractor ocInteractor;
     private ArticleAdapter adapter;
+    private boolean loading;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount, page, type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
+        page = 1;
+        type = 1;
+        loading = false;
 
         //Define interactor
         threadExecutor = new ThreadExecutor();
@@ -128,39 +138,72 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void setupRecyclerView(){
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         adapter = new ArticleAdapter(this);
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this, new RecyclerViewItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(View view, final int position) {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                        Article article = adapter.getItemData(position);
+                        intent.putExtra("article", article);
                         startActivity(intent);
                     }
                 }, 300);
             }
         }));
+        recyclerView.clearOnScrollListeners();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView,int newState)
+            {
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (totalItemCount> 1)
+                {
+                    if (lastVisibleItem >= totalItemCount - 1)
+                    {
+                        if(!loading) {
+                            page++;
+                            getMoreFeed(type, page);
+                        }
+                    }
+                }
+            }
+        });
         getFeed(1);
     }
 
     private void setJagatReview() {
         toolbar.setTitle(R.string.title_jagat_review);
-        getFeed(1);
+        type = 1;
+        page = 1;
+        getFeed(type);
     }
 
     private void setJagatPlay() {
         toolbar.setTitle(R.string.title_jagat_play);
-        getFeed(2);
+        type = 2;
+        page = 1;
+        getFeed(type);
     }
 
     private void setJagatOc() {
         toolbar.setTitle(R.string.title_jagat_oc);
-        getFeed(3);
+        type = 3;
+        page = 1;
+        getFeed(type);
     }
 
     @Override
@@ -182,6 +225,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void getFeed(int type) {
+        loading = true;
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         switch (type) {
@@ -190,20 +234,24 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onRss(Rss rss) {
                         List<Article> articles = new ArrayList<Article>();
-                        for (Item item: rss.getChannel().getItem()) {
+                        for (Item item : rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
                             article.setDateTime(item.getPubDate());
+                            article.setContent(item.getContent());
+                            article.setCreator(item.getCreator());
                             articles.add(article);
                         }
                         adapter.setArticles(articles);
                         adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        loading = false;
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
+                        loading = false;
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         Snackbar.make(mainContainer, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -218,17 +266,21 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());
+                            article.setDateTime(item.getPubDate());;
+                            article.setContent(item.getContent());
+                            article.setCreator(item.getCreator());
                             articles.add(article);
                         }
                         adapter.setArticles(articles);
                         adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        loading = false;
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
+                        loading = false;
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         Snackbar.make(mainContainer, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -243,19 +295,113 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());
+                            article.setDateTime(item.getPubDate());;
+                            article.setContent(item.getContent());
+                            article.setCreator(item.getCreator());
                             articles.add(article);
                         }
                         adapter.setArticles(articles);
                         adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        loading = false;
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
+                        loading = false;
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        Snackbar.make(mainContainer, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void getMoreFeed(int type, int page) {
+        loading = true;
+        bottomProgress.setVisibility(View.VISIBLE);
+        switch (type) {
+            case 1:
+                interactor.execute(page, new GetNewsInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        List<Article> articles = new ArrayList<Article>();
+                        for (Item item: rss.getChannel().getItem()) {
+                            Article article = new Article();
+                            article.setTitle(item.getTitle());
+                            article.setDateTime(item.getPubDate());;
+                            article.setContent(item.getContent());
+                            article.setCreator(item.getCreator());
+                            articles.add(article);
+                        }
+                        adapter.addArticles(articles);
+                        adapter.notifyDataSetChanged();
+                        bottomProgress.setVisibility(View.GONE);
+                        loading = false;
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        loading = false;
+                        progressBar.setVisibility(View.GONE);
+                        Snackbar.make(mainContainer, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case 2:
+                playInteractor.execute(page, new GetJagatPlayInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        List<Article> articles = new ArrayList<Article>();
+                        for (Item item: rss.getChannel().getItem()) {
+                            Article article = new Article();
+                            article.setTitle(item.getTitle());
+                            article.setDateTime(item.getPubDate());;
+                            article.setContent(item.getContent());
+                            article.setCreator(item.getCreator());
+                            articles.add(article);
+                        }
+                        adapter.addArticles(articles);
+                        adapter.notifyDataSetChanged();
+                        bottomProgress.setVisibility(View.GONE);
+                        loading = false;
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        loading = false;
+                        bottomProgress.setVisibility(View.GONE);
+                        Snackbar.make(mainContainer, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case 3:
+                ocInteractor.execute(page, new GetJagatOcInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        List<Article> articles = new ArrayList<Article>();
+                        for (Item item: rss.getChannel().getItem()) {
+                            Article article = new Article();
+                            article.setTitle(item.getTitle());
+                            article.setDateTime(item.getPubDate());;
+                            article.setContent(item.getContent());
+                            article.setCreator(item.getCreator());
+                            articles.add(article);
+                        }
+                        adapter.addArticles(articles);
+                        adapter.notifyDataSetChanged();
+                        bottomProgress.setVisibility(View.GONE);
+                        loading = false;
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        loading = false;
+                        bottomProgress.setVisibility(View.GONE);
                         Snackbar.make(mainContainer, throwable.getMessage(), Snackbar.LENGTH_LONG).show();
                     }
                 });

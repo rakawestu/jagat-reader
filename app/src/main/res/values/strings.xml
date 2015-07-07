@@ -2,7 +2,7 @@
     <string name="app_name">Jagat Reader</string>
 
     <!--NAVIGATION DRAWER-->
-    <string name="menu_home">Depan</string>
+    <string name="menu_home">Jagat Review</string>
     <string name="menu_play">Jagat Play</string>
     <string name="menu_oc">Jagat OC</string>
 

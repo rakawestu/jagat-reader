@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transparent_black">#b1000000</color>
+    <color name="transparent_white">#91ffffff</color>
     <!--Material Color List-->
     <!--RED-->
     <color name="red_100">#ffcdd2</color>
