@@ -24,7 +24,7 @@ This is open source project with a provide mobile apps using [http://jagatreview
 
 ## License
 
-> Copyright 2014 drakeet
+> Copyright 2014 rakawestu
 >
 > Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 >
