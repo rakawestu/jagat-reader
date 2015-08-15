@@ -10,4 +10,7 @@
     <string name="title_jagat_review">Jagat Review</string>
     <string name="title_jagat_play">Jagat Play</string>
     <string name="title_jagat_oc">Jagat OC</string>
+
+    <!--ACTION MENU-->
+    <string name="action_share">Bagikan</string>
 </resources>

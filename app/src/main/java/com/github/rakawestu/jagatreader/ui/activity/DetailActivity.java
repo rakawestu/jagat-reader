@@ -10,10 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.model.Article;
@@ -51,14 +54,16 @@ public class DetailActivity extends AppCompatActivity {
                 .replaceAll("width: [0-9]{1,}px", "width: 100%")
                 .replaceAll("height=\"[0-9]{1,}\"","height=auto")
                 .replaceAll("width: [0-9]{1,}px", "height: auto");
-        toolbar.setTitle(article.getTitle());
+        toolbar.setTitle("");
+        String header = String.format("<h4 style=\"color:#00BFFF\">%s oleh %s</h4><h1 style=\"color:#00BFFF\">%s</h1>", article.getFormattedDateTime(), article.getCreator(), article.getTitle());
+        final String dataContent = header + data;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                loadDetails(data);
+                loadDetails(dataContent);
             }
         }, 300);
     }
@@ -81,7 +86,16 @@ public class DetailActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_share:
+                //TODO: Share Article
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
     }
 }
