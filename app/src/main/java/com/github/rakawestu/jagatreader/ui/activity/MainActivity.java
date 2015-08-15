@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ import com.github.rakawestu.jagatreader.model.news.Item;
 import com.github.rakawestu.jagatreader.model.news.Rss;
 import com.github.rakawestu.jagatreader.ui.adapter.ArticleAdapter;
 import com.github.rakawestu.jagatreader.utils.RecyclerViewItemClickListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,7 +43,6 @@ import java.util.regex.Pattern;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
-import timber.log.Timber;
 
 /**
  * @author rakawm
@@ -62,10 +63,11 @@ public class MainActivity extends AppCompatActivity{
     NavigationView navigationView;
     @InjectView(R.id.recycler_view)
     RecyclerView recyclerView;
-
-    private Handler handler = new Handler();
+    @InjectView(R.id.swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
     ThreadExecutor threadExecutor;
     MainThreadExecutor mainThreadExecutor;
+    private Handler handler = new Handler();
     private LinearLayoutManager layoutManager;
     private GetNewsInteractor interactor;
     private GetJagatPlayInteractor playInteractor;
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity{
                 }, 300);
             }
         }));
+        setSwipeRefreshLayout(1);
         recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -167,16 +170,13 @@ public class MainActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView,int newState)
-            {
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                if (totalItemCount> 1)
-                {
-                    if (lastVisibleItem >= totalItemCount - 1)
-                    {
-                        if(!loading) {
+                if (totalItemCount > 1) {
+                    if (lastVisibleItem >= totalItemCount - 1) {
+                        if (!loading) {
                             page++;
                             getMoreFeed(type, page);
                         }
@@ -184,28 +184,40 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-        getFeed(1);
+        getFeed(1, false);
+    }
+
+    private void setSwipeRefreshLayout(final int type) {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFeed(type, true);
+            }
+        });
     }
 
     private void setJagatReview() {
         toolbar.setTitle(R.string.title_jagat_review);
         type = 1;
         page = 1;
-        getFeed(type);
+        setSwipeRefreshLayout(type);
+        getFeed(type, false);
     }
 
     private void setJagatPlay() {
         toolbar.setTitle(R.string.title_jagat_play);
         type = 2;
         page = 1;
-        getFeed(type);
+        setSwipeRefreshLayout(type);
+        getFeed(type, false);
     }
 
     private void setJagatOc() {
         toolbar.setTitle(R.string.title_jagat_oc);
         type = 3;
         page = 1;
-        getFeed(type);
+        setSwipeRefreshLayout(type);
+        getFeed(type, false);
     }
 
     @Override
@@ -226,10 +238,10 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void getFeed(int type) {
+    private void getFeed(int type, boolean isRefresh) {
         loading = true;
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(isRefresh ? View.GONE : View.VISIBLE);
+        recyclerView.setVisibility(isRefresh ? View.VISIBLE : View.GONE);
         switch (type) {
             case 1:
                 interactor.execute(1, new GetNewsInteractor.Callback() {
@@ -255,6 +267,7 @@ public class MainActivity extends AppCompatActivity{
                         adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setRefreshing(false);
                         loading = false;
                     }
 
@@ -291,6 +304,7 @@ public class MainActivity extends AppCompatActivity{
                         adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setRefreshing(false);
                         loading = false;
                     }
 
@@ -311,7 +325,7 @@ public class MainActivity extends AppCompatActivity{
                         for (Item item: rss.getChannel().getItem()) {
                             Article article = new Article();
                             article.setTitle(item.getTitle());
-                            article.setDateTime(item.getPubDate());;
+                            article.setDateTime(item.getPubDate());
                             article.setContent(item.getContent());
                             article.setCreator(item.getCreator());
                             Pattern pattern = Pattern.compile("src=\"(.+?)\"");
@@ -327,6 +341,7 @@ public class MainActivity extends AppCompatActivity{
                         adapter.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
+                        swipeRefreshLayout.setRefreshing(false);
                         loading = false;
                     }
 

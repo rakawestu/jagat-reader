@@ -10,31 +10,37 @@
 
     <!-- content-->
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/containerMain"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/containerMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!--toolbar-->
         <android.support.design.widget.AppBarLayout
                 android:id="@+id/appbar"
-                android:layout_height="?actionBarSize"
                 android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
                 android:fitsSystemWindows="true">
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
-                    android:layout_height="?attr/actionBarSize"
                     android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:titleTextAppearance="@style/Toolbar"/>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <include layout="@layout/progress_bar"/>
         <include layout="@layout/bottom_progress"/>
