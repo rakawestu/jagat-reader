@@ -41,9 +41,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>
-
-        <include layout="@layout/progress_bar"/>
-        <include layout="@layout/bottom_progress"/>
     </android.support.design.widget.CoordinatorLayout>
 
     <!-- nav drawer-->

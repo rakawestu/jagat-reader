@@ -45,7 +45,9 @@ import butterknife.InjectView;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 /**
+ * 
  * @author rakawm
+ * @deprecated
  */
 public class MainActivity extends AppCompatActivity{
 

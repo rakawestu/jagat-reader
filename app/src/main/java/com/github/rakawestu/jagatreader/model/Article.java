@@ -21,6 +21,20 @@ public class Article implements Serializable{
 
     }
 
+    public Article(String title,
+                   String description,
+                   String dateTime,
+                   String imageUrl,
+                   String content,
+                   String creator) {
+        setTitle(title);
+        setDescription(description);
+        setDateTime(dateTime);
+        setImageUrl(imageUrl);
+        setContent(content);
+        setCreator(creator);
+    }
+
     public int getId() {
         return id;
     }
@@ -49,12 +63,12 @@ public class Article implements Serializable{
         return dateTime;
     }
 
-    public String getFormattedDateTime() {
-        return TimeUtil.getFormattedDate(TimeUtil.fromFeed(dateTime));
-    }
-
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getFormattedDateTime() {
+        return TimeUtil.getFormattedDate(TimeUtil.fromFeed(dateTime));
     }
 
     public String getImageUrl() {
