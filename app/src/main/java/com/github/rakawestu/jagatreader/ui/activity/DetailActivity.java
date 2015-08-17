@@ -1,5 +1,6 @@
 package com.github.rakawestu.jagatreader.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,8 +18,12 @@ import android.webkit.WebViewClient;
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.model.Article;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * @author rakawm
@@ -29,10 +34,13 @@ public class DetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     @InjectView(R.id.article_detail)
     WebView webView;
-
-    private ShareActionProvider mShareActionProvider;
     private Handler handler = new Handler();
     private Article article;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,8 +60,9 @@ public class DetailActivity extends AppCompatActivity {
                 .replaceAll("height=\"[0-9]{1,}\"","height=auto")
                 .replaceAll("width: [0-9]{1,}px", "height: auto");
         toolbar.setTitle("");
+        String css = "<html><head><style type=\"text/css\">@font-face {font-family: ubuntu;src: url(\"file:///android_asset/Ubuntu-R.ttf\")}body {font-family: ubuntu;}</style></head><body>";
         String header = String.format("<h4 style=\"color:#00BFFF\">%s oleh %s</h4><h1 style=\"color:#00BFFF\">%s</h1>", article.getFormattedDateTime(), article.getCreator(), article.getTitle());
-        final String dataContent = header + data;
+        final String dataContent = css + header + data + "</body></html>";
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -66,7 +75,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void loadDetails(String data){
-        webView.loadData(data, "text/html", "utf-8");
+        webView.loadDataWithBaseURL("", data, "text/html", "UTF-8", null);
     }
 
     @Override
@@ -105,4 +114,28 @@ public class DetailActivity extends AppCompatActivity {
         shareAction.setShareIntent(shareIntent); //crashes here, shareAction is null
         return true;
     }
+
+    private boolean copyFile(Context context, String fileName) {
+        boolean status = false;
+        try {
+            FileOutputStream out = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            InputStream in = context.getAssets().open(fileName);
+            // Transfer bytes from the input file to the output file
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            // Close the streams
+            out.close();
+            in.close();
+            status = true;
+        } catch (Exception e) {
+            System.out.println("Exception in copyFile:: " + e.getMessage());
+            status = false;
+        }
+        System.out.println("copyFile Status:: " + status);
+        return status;
+    }
+
 }

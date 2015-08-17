@@ -1,5 +1,6 @@
 package com.github.rakawestu.jagatreader.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * @author rakawm
@@ -61,6 +63,11 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     private SlideInBottomAnimationAdapter animationAdapter;
     private LinearLayoutManager layoutManager;
     private boolean loading;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
