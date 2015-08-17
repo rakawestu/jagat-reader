@@ -16,6 +16,7 @@ public class Article implements Serializable{
     private String imageUrl;
     private String content;
     private String creator;
+    private String url;
 
     public Article() {
 
@@ -26,13 +27,15 @@ public class Article implements Serializable{
                    String dateTime,
                    String imageUrl,
                    String content,
-                   String creator) {
+                   String creator,
+                   String url) {
         setTitle(title);
         setDescription(description);
         setDateTime(dateTime);
         setImageUrl(imageUrl);
         setContent(content);
         setCreator(creator);
+        setUrl(url);
     }
 
     public int getId() {
@@ -93,5 +96,13 @@ public class Article implements Serializable{
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

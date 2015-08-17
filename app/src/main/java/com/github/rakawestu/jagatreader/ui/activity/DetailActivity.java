@@ -1,22 +1,18 @@
 package com.github.rakawestu.jagatreader.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.model.Article;
@@ -34,6 +30,7 @@ public class DetailActivity extends AppCompatActivity {
     @InjectView(R.id.article_detail)
     WebView webView;
 
+    private ShareActionProvider mShareActionProvider;
     private Handler handler = new Handler();
     private Article article;
 
@@ -95,7 +92,17 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        article = (Article) getIntent().getSerializableExtra("article");
         getMenuInflater().inflate(R.menu.menu_detail, menu);
+        MenuItem item = menu.findItem(R.id.action_share);
+        ShareActionProvider shareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND)
+                .putExtra(Intent.EXTRA_TEXT, article.getUrl())
+                .putExtra(Intent.EXTRA_TITLE, article.getTitle())
+                .putExtra(Intent.EXTRA_SUBJECT, article.getTitle())
+                .setType("text/plain");
+        shareAction.setShareIntent(shareIntent); //crashes here, shareAction is null
         return true;
     }
 }

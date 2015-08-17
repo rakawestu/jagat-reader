@@ -153,7 +153,7 @@ public class NewsPresenterImpl implements NewsPresenter {
     private List<Article> extractArticle(List<Item> items) {
         List<Article> articles = new ArrayList<>();
         for (Item item : items) {
-            Article article = new Article(item.getTitle(), item.getDescription(), item.getPubDate(), "", item.getContent(), item.getCreator());
+            Article article = new Article(item.getTitle(), item.getDescription(), item.getPubDate(), "", item.getContent(), item.getCreator(), item.getLink());
             Pattern pattern = Pattern.compile("src=\"(.+?)\"");
             Matcher matcher = pattern.matcher(item.getContent());
             if (matcher.find()) {
