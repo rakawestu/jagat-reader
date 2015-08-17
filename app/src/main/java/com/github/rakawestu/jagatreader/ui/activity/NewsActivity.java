@@ -31,6 +31,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
 
 /**
  * @author rakawm
@@ -57,6 +58,7 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     private Handler handler = new Handler();
     private NewsPresenter presenter = new NewsPresenterImpl();
     private ArticleAdapter adapter;
+    private SlideInBottomAnimationAdapter animationAdapter;
     private LinearLayoutManager layoutManager;
     private boolean loading;
 
@@ -104,6 +106,7 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                 if (!menuItem.isChecked()) {
                     adapter.setArticles(new ArrayList<Article>());
                     adapter.notifyDataSetChanged();
+                    animationAdapter.notifyDataSetChanged();
                     switch (menuItem.getItemId()) {
                         case R.id.nav_home:
                             handler.postDelayed(new Runnable() {
@@ -160,7 +163,8 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        animationAdapter = new SlideInBottomAnimationAdapter(adapter);
+        recyclerView.setAdapter(animationAdapter);
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this, new RecyclerViewItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
@@ -218,6 +222,7 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     public void addData(List<Article> data) {
         adapter.setArticles(data);
         adapter.notifyDataSetChanged();
+        animationAdapter.notifyDataSetChanged();
     }
 
 
