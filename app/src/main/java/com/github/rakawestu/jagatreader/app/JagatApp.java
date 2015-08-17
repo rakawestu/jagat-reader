@@ -4,6 +4,9 @@ import android.app.Application;
 
 import com.github.rakawestu.jagatreader.BuildConfig;
 import com.github.rakawestu.jagatreader.R;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -35,6 +38,11 @@ public class JagatApp extends Application {
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("Ubuntu-R.ttf")
                 .setFontAttrId(R.attr.fontPath)
+                .build());
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Picasso.setSingletonInstance(new Picasso.Builder(this)
+                .downloader(new OkHttpDownloader(okHttpClient))
                 .build());
     }
 }
