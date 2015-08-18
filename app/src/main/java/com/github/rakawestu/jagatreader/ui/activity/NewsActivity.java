@@ -18,7 +18,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.github.rakawestu.jagatreader.BuildConfig;
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.model.Article;
 import com.github.rakawestu.jagatreader.ui.adapter.ArticleAdapter;
@@ -52,6 +54,8 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     DrawerLayout drawerLayout;
     @InjectView(R.id.navigationView)
     NavigationView navigationView;
+    @InjectView(R.id.version)
+    TextView versionName;
     @InjectView(R.id.recycler_view)
     RecyclerView recyclerView;
     @InjectView(R.id.swipe_refresh)
@@ -146,6 +150,7 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                 return false;
             }
         });
+        versionName.setText("Versi " + BuildConfig.VERSION_NAME);
     }
 
     private void setJagatReview() {
