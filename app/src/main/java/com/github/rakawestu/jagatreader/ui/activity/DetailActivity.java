@@ -12,14 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.model.Article;
-
-import java.io.FileOutputStream;
-import java.io.InputStream;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -50,9 +48,11 @@ public class DetailActivity extends AppCompatActivity {
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSupportZoom(false);
+        webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setDisplayZoomControls(false);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         article = (Article) getIntent().getSerializableExtra("article");
         final String data = article.getContent()
                 .replaceAll("width=\"[0-9]{1,}\"", "width=\"100%\"")
@@ -60,8 +60,8 @@ public class DetailActivity extends AppCompatActivity {
                 .replaceAll("height=\"[0-9]{1,}\"","height=auto")
                 .replaceAll("width: [0-9]{1,}px", "height: auto");
         toolbar.setTitle("");
-        String css = "<html><head><style type=\"text/css\">@font-face {font-family: ubuntu;src: url(\"file:///android_asset/Ubuntu-R.ttf\")}body {font-family: ubuntu;}</style></head><body>";
-        String header = String.format("<h4 style=\"color:#00BFFF\">%s oleh %s</h4><h1 style=\"color:#00BFFF\">%s</h1>", article.getFormattedDateTime(), article.getCreator(), article.getTitle());
+        String css = "<html><head><style type=\"text/css\">@font-face {font-family: ubuntu;src: url(\"file:///android_asset/Ubuntu-R.ttf\")}body {font-family: ubuntu; font-size: larger; word-spacing: 2px; letter-spacing:1.125px}</style></head><body>";
+        String header = String.format("<h5 style=\"color:#00BFFF\">%s oleh %s</h5><h2 style=\"color:#00BFFF\">%s</h2>", article.getFormattedDateTime(), article.getCreator(), article.getTitle());
         final String dataContent = css + header + data + "</body></html>";
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -88,12 +88,11 @@ public class DetailActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
 
-        switch (item.getItemId()) {
+        switch (id) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
             case R.id.action_share:
-                //TODO: Share Article
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -113,29 +112,6 @@ public class DetailActivity extends AppCompatActivity {
                 .setType("text/plain");
         shareAction.setShareIntent(shareIntent); //crashes here, shareAction is null
         return true;
-    }
-
-    private boolean copyFile(Context context, String fileName) {
-        boolean status = false;
-        try {
-            FileOutputStream out = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            InputStream in = context.getAssets().open(fileName);
-            // Transfer bytes from the input file to the output file
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            // Close the streams
-            out.close();
-            in.close();
-            status = true;
-        } catch (Exception e) {
-            System.out.println("Exception in copyFile:: " + e.getMessage());
-            status = false;
-        }
-        System.out.println("copyFile Status:: " + status);
-        return status;
     }
 
 }
