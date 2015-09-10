@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity {
                 .replaceAll("width: [0-9]{1,}px", "height: auto");
         toolbar.setTitle("");
         String css = "<html><head><style type=\"text/css\">@font-face {font-family: ubuntu;src: url(\"file:///android_asset/Ubuntu-R.ttf\")}body {font-family: ubuntu; font-size: larger; word-spacing: 2px; letter-spacing:1.125px}</style></head><body>";
-        String header = String.format("<h5 style=\"color:#00BFFF\">%s oleh %s</h5><h2 style=\"color:#00BFFF\">%s</h2>", article.getFormattedDateTime(), article.getCreator(), article.getTitle());
+        String header = String.format("<h6 style=\"color:#00BFFF\">%s | %s | oleh %s</h6><h2 style=\"color:#00BFFF\">%s</h2>", article.getCategory(), article.getFormattedDateTime(), article.getCreator(), article.getTitle());
         final String dataContent = css + header + data + "</body></html>";
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
