@@ -54,8 +54,7 @@ public class NewsPresenterImpl implements NewsPresenter {
     @Override
     public void onRefresh() {
         page = 1;
-        articles.clear();
-        loadData(type, page);
+        refreshData(type, page);
     }
 
     @Override
@@ -150,10 +149,69 @@ public class NewsPresenterImpl implements NewsPresenter {
         }
     }
 
+    private void refreshData(int type, int page) {
+        view.showLoading();
+
+        switch (type) {
+            case 1:
+                //Load jagat review news
+                interactor.execute(page, new GetNewsInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case 2:
+                //Load jagat play news
+                playInteractor.execute(page, new GetJagatPlayInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case 3:
+                //Load jagat oc news
+                ocInteractor.execute(page, new GetJagatOcInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+        }
+    }
+
     private List<Article> extractArticle(List<Item> items) {
         List<Article> articles = new ArrayList<>();
         for (Item item : items) {
-            Article article = new Article(item.getTitle(), item.getDescription(), item.getPubDate(), "", item.getContent(), item.getCreator(), item.getLink());
+            Article article = new Article(item.getTitle(), item.getDescription(), item.getPubDate(), "", item.getContent(), item.getCreator(), item.getLink(), item.getCategory().get(0));
             Pattern pattern = Pattern.compile("src=\"(.+?)\"");
             Matcher matcher = pattern.matcher(item.getContent());
             if (matcher.find()) {
