@@ -17,6 +17,7 @@ public class Article implements Serializable{
     private String content;
     private String creator;
     private String url;
+    private String category;
 
     public Article() {
 
@@ -28,7 +29,8 @@ public class Article implements Serializable{
                    String imageUrl,
                    String content,
                    String creator,
-                   String url) {
+                   String url,
+                   String category) {
         setTitle(title);
         setDescription(description);
         setDateTime(dateTime);
@@ -36,6 +38,7 @@ public class Article implements Serializable{
         setContent(content);
         setCreator(creator);
         setUrl(url);
+        setCategory(category);
     }
 
     public int getId() {
@@ -104,5 +107,13 @@ public class Article implements Serializable{
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

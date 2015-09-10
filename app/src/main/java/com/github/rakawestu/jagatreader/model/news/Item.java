@@ -98,4 +98,12 @@ public class Item {
     public void setCreator(String creator) {
         this.creator = creator;
     }
+
+    public List<String> getCategory() {
+        return category;
+    }
+
+    public void setCategory(List<String> category) {
+        this.category = category;
+    }
 }
