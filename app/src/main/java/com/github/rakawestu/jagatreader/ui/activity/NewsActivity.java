@@ -29,7 +29,6 @@ import com.github.rakawestu.jagatreader.ui.presenter.NewsPresenterImpl;
 import com.github.rakawestu.jagatreader.ui.view.NewsView;
 import com.github.rakawestu.jagatreader.utils.RecyclerViewItemClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -114,40 +113,35 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                if (!menuItem.isChecked()) {
-                    adapter.setArticles(new ArrayList<Article>());
-                    adapter.notifyDataSetChanged();
-                    animationAdapter.notifyDataSetChanged();
-                    switch (menuItem.getItemId()) {
-                        case R.id.nav_home:
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setJagatReview();
-                                }
-                            }, 300);
-                            break;
-                        case R.id.nav_play:
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setJagatPlay();
-                                }
-                            }, 300);
-                            break;
-                        case R.id.nav_oc:
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setJagatOc();
-                                }
-                            }, 300);
-                            break;
-                    }
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_home:
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setJagatReview();
+                            }
+                        }, 300);
+                        break;
+                    case R.id.nav_play:
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setJagatPlay();
+                            }
+                        }, 300);
+                        break;
+                    case R.id.nav_oc:
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setJagatOc();
+                            }
+                        }, 300);
+                        break;
                 }
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
-                return false;
+                return true;
             }
         });
         versionName.setText("Versi " + BuildConfig.VERSION_NAME);
@@ -216,6 +210,16 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("article", article);
         startActivity(intent);
+    }
+
+    @Override
+    public void showContent() {
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideContent() {
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override

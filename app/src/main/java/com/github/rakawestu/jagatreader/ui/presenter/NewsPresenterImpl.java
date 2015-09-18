@@ -65,10 +65,10 @@ public class NewsPresenterImpl implements NewsPresenter {
 
     @Override
     public void changeType(int type) {
+        view.hideContent();
         this.type = type;
         page = 1;
-        articles.clear();
-        loadData(this.type, page);
+        refreshData(this.type, page);
     }
 
     @Override
@@ -162,6 +162,7 @@ public class NewsPresenterImpl implements NewsPresenter {
                         articles.clear();
                         articles.addAll(extractArticle(rss.getChannel().getItem()));
                         view.addData(articles);
+                        view.showContent();
                     }
 
                     @Override
@@ -177,8 +178,10 @@ public class NewsPresenterImpl implements NewsPresenter {
                     @Override
                     public void onRss(Rss rss) {
                         view.hideLoading();
+                        articles.clear();
                         articles.addAll(extractArticle(rss.getChannel().getItem()));
                         view.addData(articles);
+                        view.showContent();
                     }
 
                     @Override
@@ -194,8 +197,10 @@ public class NewsPresenterImpl implements NewsPresenter {
                     @Override
                     public void onRss(Rss rss) {
                         view.hideLoading();
+                        articles.clear();
                         articles.addAll(extractArticle(rss.getChannel().getItem()));
                         view.addData(articles);
+                        view.showContent();
                     }
 
                     @Override

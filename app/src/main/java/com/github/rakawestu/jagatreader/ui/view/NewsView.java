@@ -9,4 +9,8 @@ import java.util.List;
  */
 public interface NewsView extends View<List<Article>> {
     void showDetails(Article article);
+
+    void showContent();
+
+    void hideContent();
 }
