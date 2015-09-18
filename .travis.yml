@@ -15,3 +15,4 @@ before_install:
 
 script:
   - ./gradlew clean test check
+  - ./gradlew clean build

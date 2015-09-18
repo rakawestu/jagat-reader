@@ -1,3 +1,7 @@
+#Jagat Reader
+
+[![Build Status](https://travis-ci.org/rakawestu/jagat-reader.svg)](https://travis-ci.org/rakawestu/jagat-reader)
+
 # Description
 
 This is open source project with a provide mobile apps using [http://jagatreview.com/](JagatReview website) as data source. 
