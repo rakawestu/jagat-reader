@@ -15,7 +15,7 @@ allprojects {
     }
 }
 
-//apply plugin: 'android-sdk-manager'
+apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
 
 android {
