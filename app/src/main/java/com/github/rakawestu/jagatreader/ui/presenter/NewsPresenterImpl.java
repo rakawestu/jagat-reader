@@ -101,8 +101,13 @@ public class NewsPresenterImpl implements NewsPresenter {
                     @Override
                     public void onRss(Rss rss) {
                         view.hideLoading();
-                        articles.addAll(extractArticle(rss.getChannel().getItem()));
-                        view.addData(articles);
+                        if (rss.getChannel().getItem() != null && rss.getChannel().getItem().size() > 0) {
+                            articles.addAll(extractArticle(rss.getChannel().getItem()));
+                            view.addData(articles);
+                        } else {
+                            view.onError(new Exception("No items"));
+
+                        }
                     }
 
                     @Override
