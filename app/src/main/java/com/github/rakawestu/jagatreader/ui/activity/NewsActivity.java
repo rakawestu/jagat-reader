@@ -53,19 +53,17 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     DrawerLayout drawerLayout;
     @InjectView(R.id.navigationView)
     NavigationView navigationView;
-    @InjectView(R.id.version)
-    TextView versionName;
     @InjectView(R.id.recycler_view)
     RecyclerView recyclerView;
     @InjectView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private Handler handler = new Handler();
     private NewsPresenter presenter = new NewsPresenterImpl();
     private ArticleAdapter adapter;
     private SlideInBottomAnimationAdapter animationAdapter;
     private LinearLayoutManager layoutManager;
     private boolean loading;
+    private Handler handler = new Handler();
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -144,7 +142,13 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                 return true;
             }
         });
-        versionName.setText("Versi " + BuildConfig.VERSION_NAME);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                TextView versionName = (TextView) findViewById(R.id.version);
+                versionName.setText("Versi " + BuildConfig.VERSION_NAME);
+            }
+        }, 150);
     }
 
     private void setJagatReview() {
