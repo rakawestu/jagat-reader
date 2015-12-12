@@ -23,7 +23,7 @@ public class Rss {
     @Element(name = "channel")
     private Channel channel;
 
-    @Attribute(name = "version")
+    @Attribute(name = "version", required = false)
     private String version;
 
     public Channel getChannel() {

@@ -148,7 +148,7 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                 TextView versionName = (TextView) findViewById(R.id.version);
                 versionName.setText("Versi " + BuildConfig.VERSION_NAME);
             }
-        }, 150);
+        }, 300);
     }
 
     private void setJagatReview() {
