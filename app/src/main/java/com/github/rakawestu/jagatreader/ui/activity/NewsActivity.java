@@ -248,7 +248,26 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
 
     @Override
     public void onError(Throwable throwable) {
-        Snackbar.make(mainContainer, throwable.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mainContainer, "Gagal mengambil berita.", Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (adapter.getItemCount() > 0) {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            presenter.onRefresh();
+                        }
+                    }, 300);
+                } else {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            presenter.onViewCreate();
+                        }
+                    }, 300);
+                }
+            }
+        }).show();
     }
 
     @Override

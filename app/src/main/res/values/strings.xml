@@ -13,4 +13,7 @@
 
     <!--ACTION MENU-->
     <string name="action_share">Bagikan</string>
+
+    <!--ANOTHER TEXT-->
+    <string name="action_retry">Ulangi</string>
 </resources>
