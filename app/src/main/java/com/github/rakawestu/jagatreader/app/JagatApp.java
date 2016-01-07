@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.github.rakawestu.jagatreader.BuildConfig;
 import com.github.rakawestu.jagatreader.R;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -17,6 +19,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  * @author rakawm
  */
 public class JagatApp extends Application {
+    private Tracker mTracker;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -44,5 +48,22 @@ public class JagatApp extends Application {
         Picasso.setSingletonInstance(new Picasso.Builder(this)
                 .downloader(new OkHttpDownloader(okHttpClient))
                 .build());
+    }
+
+    /**
+     * Gets the default {@link Tracker} for this {@link Application}.
+     * @return tracker
+     */
+    synchronized public Tracker getDefaultTracker() {
+        if (mTracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+            mTracker = analytics.newTracker(R.xml.global_tracker);
+            mTracker.enableExceptionReporting(true);
+            mTracker.enableAdvertisingIdCollection(true);
+            mTracker.enableAutoActivityTracking(true);
+
+        }
+        return mTracker;
     }
 }

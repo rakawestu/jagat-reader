@@ -2,9 +2,17 @@ package com.github.rakawestu.jagatreader.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsCallback;
+import android.support.customtabs.CustomTabsClient;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsServiceConnection;
+import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -22,18 +30,23 @@ import android.widget.TextView;
 
 import com.github.rakawestu.jagatreader.BuildConfig;
 import com.github.rakawestu.jagatreader.R;
+import com.github.rakawestu.jagatreader.app.Constant;
+import com.github.rakawestu.jagatreader.app.JagatApp;
 import com.github.rakawestu.jagatreader.model.Article;
 import com.github.rakawestu.jagatreader.ui.adapter.ArticleAdapter;
 import com.github.rakawestu.jagatreader.ui.presenter.NewsPresenter;
 import com.github.rakawestu.jagatreader.ui.presenter.NewsPresenterImpl;
 import com.github.rakawestu.jagatreader.ui.view.NewsView;
 import com.github.rakawestu.jagatreader.utils.RecyclerViewItemClickListener;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -44,6 +57,9 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     private static final int TYPE_REVIEW = 1;
     private static final int TYPE_PLAY = 2;
     private static final int TYPE_OC = 3;
+    private static final String NEWS_LIST = "News List";
+    private static final String EXTRA_CUSTOM_TABS_SESSION = "android.support.customtabs.extra.SESSION";
+    private static final String EXTRA_CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
 
     @InjectView(R.id.containerMain)
     CoordinatorLayout mainContainer;
@@ -64,6 +80,7 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
     private LinearLayoutManager layoutManager;
     private boolean loading;
     private Handler handler = new Handler();
+    private Tracker mTracker;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -75,14 +92,30 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.inject(this);
+        // Obtain the shared Tracker instance.
+        JagatApp application = (JagatApp) getApplication();
+        mTracker = application.getDefaultTracker();
         setup();
         presenter.setView(this);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(Constant.CATEGORY_NEWS)
+                .setAction(Constant.ACTION_GET)
+                .setLabel(Constant.GET_JAGAT_REVIEW)
+                .build());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 presenter.onViewCreate();
             }
         }, 300);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.i("Setting screen name: " + NEWS_LIST);
+        mTracker.setScreenName(NEWS_LIST);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private void setup() {
@@ -113,6 +146,11 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
+                        mTracker.send(new HitBuilders.EventBuilder()
+                                .setCategory(Constant.CATEGORY_NEWS)
+                                .setAction(Constant.ACTION_GET)
+                                .setLabel(Constant.GET_JAGAT_REVIEW)
+                                .build());
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -121,6 +159,11 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                         }, 300);
                         break;
                     case R.id.nav_play:
+                        mTracker.send(new HitBuilders.EventBuilder()
+                                .setCategory(Constant.CATEGORY_NEWS)
+                                .setAction(Constant.ACTION_GET)
+                                .setLabel(Constant.GET_JAGAT_PLAY)
+                                .build());
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -129,6 +172,11 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                         }, 300);
                         break;
                     case R.id.nav_oc:
+                        mTracker.send(new HitBuilders.EventBuilder()
+                                .setCategory(Constant.CATEGORY_NEWS)
+                                .setAction(Constant.ACTION_GET)
+                                .setLabel(Constant.GET_JAGAT_OC)
+                                .build());
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {

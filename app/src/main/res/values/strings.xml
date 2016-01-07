@@ -13,6 +13,7 @@
 
     <!--ACTION MENU-->
     <string name="action_share">Bagikan</string>
+    <string name="action_web">Tampilkan Web</string>
 
     <!--ANOTHER TEXT-->
     <string name="action_retry">Ulangi</string>

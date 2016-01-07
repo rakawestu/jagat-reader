@@ -2,9 +2,16 @@ package com.github.rakawestu.jagatreader.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsCallback;
+import android.support.customtabs.CustomTabsClient;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsServiceConnection;
+import android.support.customtabs.CustomTabsSession;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
@@ -17,10 +24,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.github.rakawestu.jagatreader.R;
+import com.github.rakawestu.jagatreader.app.Constant;
+import com.github.rakawestu.jagatreader.app.JagatApp;
 import com.github.rakawestu.jagatreader.model.Article;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -28,12 +40,26 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 public class DetailActivity extends AppCompatActivity {
 
+    private static final String NEWS_DETAIL = "News Detail";
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.article_detail)
     WebView webView;
     private Handler handler = new Handler();
     private Article article;
+    private Tracker mTracker;
+
+    private CustomTabsSession mCustomTabsSession;
+    private CustomTabsClient mClient;
+    private CustomTabsServiceConnection mConnection;
+    private String mPackageNameToBind;
+
+    private static class NavigationCallback extends CustomTabsCallback {
+        @Override
+        public void onNavigationEvent(int navigationEvent, Bundle extras) {
+            Timber.w("onNavigationEvent: Code = " + navigationEvent);
+        }
+    }
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -45,6 +71,9 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_activity);
         ButterKnife.inject(this);
+        // Obtain the shared Tracker instance.
+        JagatApp application = (JagatApp) getApplication();
+        mTracker = application.getDefaultTracker();
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient());
@@ -69,6 +98,11 @@ public class DetailActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(Constant.CATEGORY_NEWS)
+                        .setAction(Constant.ACTION_READ)
+                        .setLabel(article.getTitle())
+                        .build());
                 loadDetails(dataContent);
             }
         }, 300);
@@ -76,6 +110,14 @@ public class DetailActivity extends AppCompatActivity {
 
     private void loadDetails(String data){
         webView.loadDataWithBaseURL("", data, "text/html", "UTF-8", null);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.i("Setting screen name: " + NEWS_DETAIL);
+        mTracker.setScreenName(NEWS_DETAIL);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
@@ -94,6 +136,9 @@ public class DetailActivity extends AppCompatActivity {
                 return true;
             case R.id.action_share:
                 return true;
+            case R.id.action_show_web:
+                openWeb();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -111,7 +156,41 @@ public class DetailActivity extends AppCompatActivity {
                 .putExtra(Intent.EXTRA_SUBJECT, article.getTitle())
                 .setType("text/plain");
         shareAction.setShareIntent(shareIntent); //crashes here, shareAction is null
+        shareAction.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+            @Override
+            public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory(Constant.CATEGORY_NEWS)
+                        .setAction(Constant.ACTION_SHARE)
+                        .setLabel(article.getTitle())
+                        .build());
+                return false;
+            }
+        });
         return true;
     }
 
+    private CustomTabsSession getSession() {
+        if (mClient == null) {
+            mCustomTabsSession = null;
+        } else if (mCustomTabsSession == null) {
+            mCustomTabsSession = mClient.newSession(new NavigationCallback());
+        }
+        return mCustomTabsSession;
+    }
+
+    private void openWeb() {
+        String url = article.getUrl();
+        //  Must have. Extra used to match the session. Its value is an IBinder passed
+        //  whilst creating a news session. See newSession() below. Even if the service is not
+        //  used and there is no valid session id to be provided, this extra has to be present
+        //  with a null value to launch a custom tab.
+
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(getSession());
+
+        builder.setToolbarColor(getResources().getColor(android.R.color.black)).setShowTitle(true);
+        builder.setCloseButtonIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_white_24dp));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(url));
+    }
 }
