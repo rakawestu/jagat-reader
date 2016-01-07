@@ -27,8 +27,8 @@ android {
         applicationId "com.github.rakawestu.jagatreader"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 12
-        versionName "0.3.6"
+        versionCode 13
+        versionName "0.4.0"
     }
 
     compileOptions {
