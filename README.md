@@ -2,13 +2,13 @@
 
 # Description
 
-This is open source project with a provide mobile apps using [http://jagatreview.com/](JagatReview website) as data source. 
+This is open source project with a provide mobile apps using [JagatReview website](http://jagatreview.com) as data source. 
 
 This app design is using material design provided by Android support library.
 
 This app can be downloaded from play store.
 
-[https://play.google.com/store/apps/details?id=com.github.rakawestu.jagatreader](Download here)
+[Download here](https://play.google.com/store/apps/details?id=com.github.rakawestu.jagatreader)
 
 # Used Libraries
 
