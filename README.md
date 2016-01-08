@@ -1,12 +1,14 @@
 #Jagat Reader
 
-[![Build Status](https://travis-ci.org/rakawestu/jagat-reader.svg)](https://travis-ci.org/rakawestu/jagat-reader)
-
 # Description
 
 This is open source project with a provide mobile apps using [http://jagatreview.com/](JagatReview website) as data source. 
 
 This app design is using material design provided by Android support library.
+
+This app can be downloaded from play store.
+
+[https://play.google.com/store/apps/details?id=com.github.rakawestu.jagatreader](Download here)
 
 # Used Libraries
 
