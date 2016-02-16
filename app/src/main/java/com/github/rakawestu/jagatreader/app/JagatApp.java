@@ -1,6 +1,8 @@
 package com.github.rakawestu.jagatreader.app;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.github.rakawestu.jagatreader.BuildConfig;
 import com.github.rakawestu.jagatreader.R;
@@ -20,6 +22,13 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
  */
 public class JagatApp extends Application {
     private Tracker mTracker;
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {

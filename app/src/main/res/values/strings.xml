@@ -14,7 +14,13 @@
     <!--ACTION MENU-->
     <string name="action_share">Bagikan</string>
     <string name="action_web">Tampilkan Web</string>
+    <string name="action_invite">Undang Teman</string>
 
     <!--ANOTHER TEXT-->
     <string name="action_retry">Ulangi</string>
+
+    <!--INVITATION-->
+    <string name="invitation_title">Undang teman untuk mengunduh Jagat Reader</string>
+    <string name="invitation_message">Halo, silakan coba aplikasi baca berita Jagat Review berikut.</string>
+    <string name="invitation_cta">Undang</string>
 </resources>
