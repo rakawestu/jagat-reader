@@ -22,5 +22,5 @@
     <!--INVITATION-->
     <string name="invitation_title">Undang teman untuk mengunduh Jagat Reader</string>
     <string name="invitation_message">Halo, silakan coba aplikasi baca berita Jagat Review berikut.</string>
-    <string name="invitation_cta">Undang</string>
+    <string name="invitation_cta">Pasang</string>
 </resources>
