@@ -14,7 +14,16 @@
           "package_name": "com.github.rakawestu.jagatreader"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "332237923167-m136uamsm8pg1a5vhkm86k1jb7ddmrk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.rakawestu.jagatreader",
+            "certificate_hash": "55416C57EADB365E198E45991B160F49D1D8EA21"
+          }
+        }
+      ],
       "api_key": [],
       "services": {
         "analytics_service": {
@@ -28,7 +37,7 @@
           "apns_config": []
         },
         "appinvite_service": {
-          "status": 1,
+          "status": 2,
           "other_platform_oauth_client": []
         },
         "google_signin_service": {

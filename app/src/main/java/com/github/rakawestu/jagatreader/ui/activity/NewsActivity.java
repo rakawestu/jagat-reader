@@ -24,6 +24,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ import com.github.rakawestu.jagatreader.ui.view.NewsView;
 import com.github.rakawestu.jagatreader.utils.RecyclerViewItemClickListener;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import java.util.List;
 
@@ -54,6 +56,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 public class NewsActivity extends AppCompatActivity implements NewsView {
 
+    private static final int REQUEST_INVITE = 1002;
     private static final int TYPE_REVIEW = 1;
     private static final int TYPE_PLAY = 2;
     private static final int TYPE_OC = 3;
@@ -108,6 +111,12 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
                 presenter.onViewCreate();
             }
         }, 300);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -332,7 +341,18 @@ public class NewsActivity extends AppCompatActivity implements NewsView {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.action_invite:
+                invitePeoples();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void invitePeoples() {
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage(getString(R.string.invitation_message))
+                .setCallToActionText(getString(R.string.invitation_cta))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
     }
 }
