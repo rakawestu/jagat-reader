@@ -1,5 +1,8 @@
 package com.github.rakawestu.jagatreader.ui.activity;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -27,13 +30,12 @@ import com.github.rakawestu.jagatreader.R;
 import com.github.rakawestu.jagatreader.app.Constant;
 import com.github.rakawestu.jagatreader.app.JagatApp;
 import com.github.rakawestu.jagatreader.model.Article;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * @author rakawm
@@ -41,6 +43,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String NEWS_DETAIL = "News Detail";
+    private static final String EXTRA_CUSTOM_TABS_SESSION = "android.support.customtabs.extra.SESSION";
+    private static final String EXTRA_CUSTOM_TABS_TOOLBAR_COLOR = "android.support.customtabs.extra.TOOLBAR_COLOR";
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.article_detail)
@@ -180,7 +185,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void openWeb() {
+
+        // Using a VIEW intent for compatibility with any other browsers on device.
+        // Caller should not be setting FLAG_ACTIVITY_NEW_TASK or
+        // FLAG_ACTIVITY_NEW_DOCUMENT.
         String url = article.getUrl();
+
         //  Must have. Extra used to match the session. Its value is an IBinder passed
         //  whilst creating a news session. See newSession() below. Even if the service is not
         //  used and there is no valid session id to be provided, this extra has to be present
@@ -190,6 +200,8 @@ public class DetailActivity extends AppCompatActivity {
 
         builder.setToolbarColor(getResources().getColor(android.R.color.black)).setShowTitle(true);
         builder.setCloseButtonIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_close_white_24dp));
+        //builder.setStartAnimations(this, android.R.anim.slide_out_right, android.R.anim.slide_in_left);
+        //builder.setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(this, Uri.parse(url));
     }

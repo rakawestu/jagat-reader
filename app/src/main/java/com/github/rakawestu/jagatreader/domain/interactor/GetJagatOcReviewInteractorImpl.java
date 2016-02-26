@@ -11,15 +11,14 @@ import timber.log.Timber;
 /**
  * @author rakawm
  */
-public class GetJagatPlayInteractorImpl extends AbstractInteractor implements GetJagatPlayInteractor {
-
+public class GetJagatOcReviewInteractorImpl extends AbstractInteractor implements GetJagatOcReviewInteractor {
     private int page;
     private Callback callback;
     private MainRepository repository;
 
-    public GetJagatPlayInteractorImpl(InteractorExecutor interactorExecutor, MainThreadExecutor mainThreadExecutor) {
+    public GetJagatOcReviewInteractorImpl(InteractorExecutor interactorExecutor, MainThreadExecutor mainThreadExecutor) {
         super(interactorExecutor, mainThreadExecutor);
-        this.repository = new NewsFeedRepository("http://jagatplay.com/read/features/");
+        this.repository = new NewsFeedRepository("http://www.jagatoc.com/category/review/");
     }
 
     @Override

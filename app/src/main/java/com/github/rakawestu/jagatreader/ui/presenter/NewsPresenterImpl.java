@@ -1,9 +1,29 @@
 package com.github.rakawestu.jagatreader.ui.presenter;
 
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatGadgetInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatGadgetInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcCompetitionInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcCompetitionInteractorImpl;
 import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcInteractor;
 import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcReviewInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatOcReviewInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayGearInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayGearInteractorImpl;
 import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayInteractor;
 import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayNintendoInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayNintendoInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayPCInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayPCInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayPSInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayPSInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayTopInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatPlayTopInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatReleaseInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatReleaseInteractorImpl;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatReviewInteractor;
+import com.github.rakawestu.jagatreader.domain.interactor.GetJagatReviewInteractorImpl;
 import com.github.rakawestu.jagatreader.domain.interactor.GetNewsInteractor;
 import com.github.rakawestu.jagatreader.domain.interactor.GetNewsInteractorImpl;
 import com.github.rakawestu.jagatreader.executor.InteractorExecutor;
@@ -25,10 +45,34 @@ import java.util.regex.Pattern;
  */
 public class NewsPresenterImpl implements NewsPresenter {
 
+    public static final int TYPE_REVIEW_LATEST = 1;
+    public static final int TYPE_PLAY_LATEST = 2;
+    public static final int TYPE_OC_LATEST = 3;
+    public static final int TYPE_REVIEW_REVIEW = 4;
+    public static final int TYPE_REVIEW_GADGET = 5;
+    public static final int TYPE_REVIEW_RELEASE = 6;
+    public static final int TYPE_PLAY_PC = 8;
+    public static final int TYPE_PLAY_PS = 9;
+    public static final int TYPE_PLAY_NINTENDO = 10;
+    public static final int TYPE_PLAY_GEAR = 11;
+    public static final int TYPE_PLAY_TOP = 12;
+    public static final int TYPE_OC_REVIEW = 13;
+    public static final int TYPE_OC_COMPETITION = 14;
+
     private NewsView view;
     private GetNewsInteractor interactor;
     private GetJagatOcInteractor ocInteractor;
     private GetJagatPlayInteractor playInteractor;
+    private GetJagatReviewInteractor reviewInteractor;
+    private GetJagatGadgetInteractor gadgetInteractor;
+    private GetJagatReleaseInteractor releaseInteractor;
+    private GetJagatPlayPCInteractor playPCInteractor;
+    private GetJagatPlayPSInteractor playPSInteractor;
+    private GetJagatPlayNintendoInteractor nintendoInteractor;
+    private GetJagatPlayGearInteractor gearInteractor;
+    private GetJagatPlayTopInteractor topInteractor;
+    private GetJagatOcReviewInteractor ocReviewInteractor;
+    private GetJagatOcCompetitionInteractor ocCompetitionInteractor;
     private InteractorExecutor threadExecutor;
     private MainThreadExecutor mainThreadExecutor;
     private List<Article> articles;
@@ -40,9 +84,39 @@ public class NewsPresenterImpl implements NewsPresenter {
         interactor = new GetNewsInteractorImpl(threadExecutor, mainThreadExecutor);
         ocInteractor = new GetJagatOcInteractorImpl(threadExecutor, mainThreadExecutor);
         playInteractor = new GetJagatPlayInteractorImpl(threadExecutor, mainThreadExecutor);
-
+        reviewInteractor = new GetJagatReviewInteractorImpl(threadExecutor, mainThreadExecutor);
+        gadgetInteractor = new GetJagatGadgetInteractorImpl(threadExecutor, mainThreadExecutor);
+        releaseInteractor = new GetJagatReleaseInteractorImpl(threadExecutor, mainThreadExecutor);
+        playPCInteractor = new GetJagatPlayPCInteractorImpl(threadExecutor, mainThreadExecutor);
+        playPSInteractor = new GetJagatPlayPSInteractorImpl(threadExecutor, mainThreadExecutor);
+        nintendoInteractor = new GetJagatPlayNintendoInteractorImpl(threadExecutor, mainThreadExecutor);
+        gearInteractor = new GetJagatPlayGearInteractorImpl(threadExecutor, mainThreadExecutor);
+        topInteractor = new GetJagatPlayTopInteractorImpl(threadExecutor, mainThreadExecutor);
+        ocReviewInteractor = new GetJagatOcReviewInteractorImpl(threadExecutor, mainThreadExecutor);
+        ocCompetitionInteractor = new GetJagatOcCompetitionInteractorImpl(threadExecutor, mainThreadExecutor);
         page = 1;
-        type = 1;
+        type = TYPE_REVIEW_LATEST;
+        articles = new ArrayList<>();
+    }
+
+    public NewsPresenterImpl(int type) {
+        threadExecutor = new ThreadExecutor();
+        mainThreadExecutor = new MainThreadExecutorImp();
+        interactor = new GetNewsInteractorImpl(threadExecutor, mainThreadExecutor);
+        ocInteractor = new GetJagatOcInteractorImpl(threadExecutor, mainThreadExecutor);
+        playInteractor = new GetJagatPlayInteractorImpl(threadExecutor, mainThreadExecutor);
+        reviewInteractor = new GetJagatReviewInteractorImpl(threadExecutor, mainThreadExecutor);
+        gadgetInteractor = new GetJagatGadgetInteractorImpl(threadExecutor, mainThreadExecutor);
+        releaseInteractor = new GetJagatReleaseInteractorImpl(threadExecutor, mainThreadExecutor);
+        playPCInteractor = new GetJagatPlayPCInteractorImpl(threadExecutor, mainThreadExecutor);
+        playPSInteractor = new GetJagatPlayPSInteractorImpl(threadExecutor, mainThreadExecutor);
+        nintendoInteractor = new GetJagatPlayNintendoInteractorImpl(threadExecutor, mainThreadExecutor);
+        gearInteractor = new GetJagatPlayGearInteractorImpl(threadExecutor, mainThreadExecutor);
+        topInteractor = new GetJagatPlayTopInteractorImpl(threadExecutor, mainThreadExecutor);
+        ocReviewInteractor = new GetJagatOcReviewInteractorImpl(threadExecutor, mainThreadExecutor);
+        ocCompetitionInteractor = new GetJagatOcCompetitionInteractorImpl(threadExecutor, mainThreadExecutor);
+        page = 1;
+        this.type = type;
         articles = new ArrayList<>();
     }
 
@@ -95,7 +169,7 @@ public class NewsPresenterImpl implements NewsPresenter {
         view.showLoading();
 
         switch (type) {
-            case 1:
+            case TYPE_REVIEW_LATEST:
                 //Load jagat review news
                 interactor.execute(page, new GetNewsInteractor.Callback() {
                     @Override
@@ -117,7 +191,7 @@ public class NewsPresenterImpl implements NewsPresenter {
                     }
                 });
                 break;
-            case 2:
+            case TYPE_PLAY_LATEST:
                 //Load jagat play news
                 playInteractor.execute(page, new GetJagatPlayInteractor.Callback() {
                     @Override
@@ -134,9 +208,169 @@ public class NewsPresenterImpl implements NewsPresenter {
                     }
                 });
                 break;
-            case 3:
+            case TYPE_OC_LATEST:
                 //Load jagat oc news
                 ocInteractor.execute(page, new GetJagatOcInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_REVIEW_REVIEW:
+                reviewInteractor.execute(page, new GetJagatReviewInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_REVIEW_GADGET:
+                gadgetInteractor.execute(page, new GetJagatGadgetInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_REVIEW_RELEASE:
+                releaseInteractor.execute(page, new GetJagatReleaseInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_PC:
+                playPCInteractor.execute(page, new GetJagatPlayPCInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_PS:
+                playPSInteractor.execute(page, new GetJagatPlayPSInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_NINTENDO:
+                nintendoInteractor.execute(page, new GetJagatPlayNintendoInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_GEAR:
+                gearInteractor.execute(page, new GetJagatPlayGearInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_TOP:
+                topInteractor.execute(page, new GetJagatPlayTopInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_OC_COMPETITION:
+                ocCompetitionInteractor.execute(page, new GetJagatOcCompetitionInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_OC_REVIEW:
+                ocReviewInteractor.execute(page, new GetJagatOcReviewInteractor.Callback() {
                     @Override
                     public void onRss(Rss rss) {
                         view.hideLoading();
@@ -158,7 +392,7 @@ public class NewsPresenterImpl implements NewsPresenter {
         view.showLoading();
 
         switch (type) {
-            case 1:
+            case TYPE_REVIEW_LATEST:
                 //Load jagat review news
                 interactor.execute(page, new GetNewsInteractor.Callback() {
                     @Override
@@ -177,7 +411,7 @@ public class NewsPresenterImpl implements NewsPresenter {
                     }
                 });
                 break;
-            case 2:
+            case TYPE_PLAY_LATEST:
                 //Load jagat play news
                 playInteractor.execute(page, new GetJagatPlayInteractor.Callback() {
                     @Override
@@ -196,9 +430,192 @@ public class NewsPresenterImpl implements NewsPresenter {
                     }
                 });
                 break;
-            case 3:
+            case TYPE_OC_LATEST:
                 //Load jagat oc news
                 ocInteractor.execute(page, new GetJagatOcInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_REVIEW_REVIEW:
+                //Load jagat review news
+                reviewInteractor.execute(page, new GetJagatReviewInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_REVIEW_GADGET:
+                //Load jagat gadget news
+                gadgetInteractor.execute(page, new GetJagatGadgetInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_REVIEW_RELEASE:
+                //Load jagat release news
+                releaseInteractor.execute(page, new GetJagatReleaseInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_PC:
+                playPCInteractor.execute(page, new GetJagatPlayPCInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_PS:
+                playPSInteractor.execute(page, new GetJagatPlayPSInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_NINTENDO:
+                nintendoInteractor.execute(page, new GetJagatPlayNintendoInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_GEAR:
+                gearInteractor.execute(page, new GetJagatPlayGearInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_PLAY_TOP:
+                topInteractor.execute(page, new GetJagatPlayTopInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_OC_COMPETITION:
+                ocCompetitionInteractor.execute(page, new GetJagatOcCompetitionInteractor.Callback() {
+                    @Override
+                    public void onRss(Rss rss) {
+                        view.hideLoading();
+                        articles.clear();
+                        articles.addAll(extractArticle(rss.getChannel().getItem()));
+                        view.addData(articles);
+                        view.showContent();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        view.hideLoading();
+                        view.onError(throwable);
+                    }
+                });
+                break;
+            case TYPE_OC_REVIEW:
+                ocReviewInteractor.execute(page, new GetJagatOcReviewInteractor.Callback() {
                     @Override
                     public void onRss(Rss rss) {
                         view.hideLoading();

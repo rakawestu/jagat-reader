@@ -39,4 +39,6 @@
     <color name="cyan_500">#00bcd4</color>
     <color name="cyan_700">#0097a7</color>
     <color name="cyan_900">#006064</color>
+
+    <color name="blue">#00BFFF</color>
 </resources>

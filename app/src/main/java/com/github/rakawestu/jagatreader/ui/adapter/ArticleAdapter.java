@@ -2,6 +2,7 @@ package com.github.rakawestu.jagatreader.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,11 +57,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             articleViewHolder.image.setVisibility(View.VISIBLE);
             Picasso.with(context)
                     .load(article.getImageUrl())
+                    .placeholder(R.drawable.no_image)
+                    .error(R.drawable.no_image)
                     .into(articleViewHolder.image);
         } else {
-            articleViewHolder.image.setVisibility(View.GONE);
+            articleViewHolder.image.setImageResource(R.drawable.no_image);
         }
-        articleViewHolder.creator.setText("oleh " + article.getCreator());
+        articleViewHolder.synopsis.setText(Html.fromHtml(article.getContent().replaceAll("<img.+?>", "")));
+        articleViewHolder.category.setText(article.getCategory());
     }
 
     @Override
@@ -75,8 +79,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         TextView date;
         @InjectView(R.id.article_image)
         ImageView image;
-        @InjectView(R.id.article_creator)
-        TextView creator;
+        @InjectView(R.id.article_synopsis)
+        TextView synopsis;
+        @InjectView(R.id.article_category)
+        TextView category;
 
         public ArticleViewHolder(View itemView) {
             super(itemView);
