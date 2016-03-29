@@ -129,7 +129,7 @@ public class NewsActivity extends AppCompatActivity {
                 break;
         }
         adapter = new PagerAdapter(getSupportFragmentManager(), fragments, titles);
-        adapter.notifyChangeInPosition(6);
+        adapter.notifyChangeInPosition(8);
         adapter.notifyDataSetChanged();
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

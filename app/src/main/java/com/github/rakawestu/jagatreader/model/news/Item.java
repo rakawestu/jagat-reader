@@ -34,7 +34,7 @@ public class Item {
     private String link;
     @Element(name = "creator")
     private String creator;
-    @Element(name = "commentRss")
+    @Element(name = "commentRss", required = false)
     private String commentRss;
     @ElementList(inline = true, required = false, entry = "comments")
     private List<String> comments;
