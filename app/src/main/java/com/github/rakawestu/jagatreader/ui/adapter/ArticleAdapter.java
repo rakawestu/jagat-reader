@@ -63,7 +63,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         } else {
             articleViewHolder.image.setImageResource(R.drawable.no_image);
         }
-        articleViewHolder.synopsis.setText(Html.fromHtml(article.getContent().replaceAll("<img.+?>", "")));
+        if(article.getContent()!=null&&!article.getContent().equals("")) {
+            articleViewHolder.synopsis.setText(Html.fromHtml(article.getContent().replaceAll("<img.+?>", "")));
+        } else if(article.getDescription()!=null&&!article.getDescription().equals("")) {
+            articleViewHolder.synopsis.setText(Html.fromHtml(article.getDescription().replaceAll("<img.+?>", "")));
+        }
         articleViewHolder.category.setText(article.getCategory());
     }
 

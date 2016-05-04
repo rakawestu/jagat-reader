@@ -640,10 +640,19 @@ public class NewsPresenterImpl implements NewsPresenter {
         for (Item item : items) {
             Article article = new Article(item.getTitle(), item.getDescription(), item.getPubDate(), "", item.getContent(), item.getCreator(), item.getLink(), item.getCategory().get(0));
             Pattern pattern = Pattern.compile("src=\"(.+?)\"");
-            Matcher matcher = pattern.matcher(item.getContent());
-            if (matcher.find()) {
-                if (matcher.group(0) != null) {
-                    article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+            if(item.getContent()!= null && !item.getContent().equals("")) {
+                Matcher matcher = pattern.matcher(item.getContent());
+                if (matcher.find()) {
+                    if (matcher.group(0) != null) {
+                        article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                    }
+                }
+            } else if(item.getDescription()!=null&&!item.getDescription().equals("")) {
+                Matcher matcher = pattern.matcher(item.getDescription());
+                if (matcher.find()) {
+                    if (matcher.group(0) != null) {
+                        article.setImageUrl(matcher.group(0).replace("src=\"", "").replace("\"", ""));
+                    }
                 }
             }
             articles.add(article);

@@ -88,11 +88,24 @@ public class DetailActivity extends AppCompatActivity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         article = (Article) getIntent().getSerializableExtra("article");
-        final String data = article.getContent()
-                .replaceAll("width=\"[0-9]{1,}\"", "width=\"100%\"")
-                .replaceAll("width: [0-9]{1,}px", "width: 100%")
-                .replaceAll("height=\"[0-9]{1,}\"","height=auto")
-                .replaceAll("width: [0-9]{1,}px", "height: auto");
+        if(article.getContent()!=null&&!article.getContent().equals("")) {
+            final String data = article.getContent()
+                    .replaceAll("width=\"[0-9]{1,}\"", "width=\"100%\"")
+                    .replaceAll("width: [0-9]{1,}px", "width: 100%")
+                    .replaceAll("height=\"[0-9]{1,}\"","height=auto")
+                    .replaceAll("width: [0-9]{1,}px", "height: auto");
+            initWeb(data);
+        } else {
+            final String data = article.getDescription()
+                    .replaceAll("width=\"[0-9]{1,}\"", "width=\"100%\"")
+                    .replaceAll("width: [0-9]{1,}px", "width: 100%")
+                    .replaceAll("height=\"[0-9]{1,}\"","height=auto")
+                    .replaceAll("width: [0-9]{1,}px", "height: auto");
+            initWeb(data);
+        }
+    }
+
+    private void initWeb(String data) {
         toolbar.setTitle("");
         String css = "<html><head><style type=\"text/css\">@font-face {font-family: ubuntu;src: url(\"file:///android_asset/Ubuntu-R.ttf\")}body {font-family: ubuntu; font-size: larger; word-spacing: 2px; letter-spacing:1.125px}</style></head><body>";
         String header = String.format("<h6 style=\"color:#00BFFF\">%s | %s | oleh %s</h6><h2 style=\"color:#00BFFF\">%s</h2>", article.getCategory(), article.getFormattedDateTime(), article.getCreator(), article.getTitle());

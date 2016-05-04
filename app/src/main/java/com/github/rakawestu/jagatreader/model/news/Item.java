@@ -38,7 +38,7 @@ public class Item {
     private String commentRss;
     @ElementList(inline = true, required = false, entry = "comments")
     private List<String> comments;
-    @Element(name = "encoded")
+    @Element(name = "encoded", required = false)
     private String content;
     @Element(name = "enclosure", required = false)
     private Enclosure enclosure;
